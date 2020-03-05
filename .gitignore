@@ -13,3 +13,15 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
+
+.settings
+.git
+.idea
+*.iml
+.vscode
+reports/*
+vendor
+/.dockerignore
+/main
+.DS_Store
+
