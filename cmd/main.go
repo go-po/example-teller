@@ -16,8 +16,8 @@ func main() {
 
 	// initialize PO
 	dao, err := po.NewFromOptions(
-		po.WithChannelBroker(),
-		po.WithInMemoryStore(),
+		po.WithBrokerChannel(),
+		po.WithStoreInMemory(),
 	)
 	if err != nil {
 		log.Fatalf("failed initialize po: %s", err)
