@@ -1,0 +1,21 @@
+version: '3'
+services:
+  postgres:
+    image: postgres:11.5
+    container_name: teller_pg
+    ports:
+      - "5430:5432"
+    environment:
+      POSTGRES_USER: teller
+      POSTGRES_PASSWORD: teller
+  rabbitmq:
+    image: rabbitmq:3.7-management
+    container_name: teller_mq
+    ports:
+      - "5670:5672"
+      - "15670:15672"
+    environment:
+      RABBITMQ_ERLANG_COOKIE: teller
+      RABBITMQ_DEFAULT_USER: teller
+      RABBITMQ_DEFAULT_PASS: teller
+      RABBITMQ_DEFAULT_VHOST: /
