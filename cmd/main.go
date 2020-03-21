@@ -14,8 +14,8 @@ import (
 )
 
 var (
-	flagBroker string
-	flagStore  string
+	flagProtocol string
+	flagStore    string
 
 	flagHelp bool
 
@@ -30,8 +30,8 @@ func main() {
 	pg: uses a connection url matching the docker-compose.yaml file
 	provide your own connection url
 `)
-	flag.StringVar(&flagBroker, "broker", "channels", `Set the broker
-	channels: use the channels broker
+	flag.StringVar(&flagProtocol, "protocol", "channels", `Set the protocol
+	channels: use the channels protocol
 	rabbit: uses the RabbitMQ matching the docker-compose.yaml file
 	provide your own RabbitMQ url
 `)
@@ -45,30 +45,30 @@ func main() {
 		os.Exit(0)
 	}
 
-	var broker po.Option
-	if flagBroker == "rabbit" {
-		broker = po.WithBrokerRabbit(defaultRabbitUrl, "teller", "app")
-	} else if flagBroker != "channels" && strings.TrimSpace(flagBroker) != "" {
-		broker = po.WithBrokerRabbit(flagBroker, "teller", "app")
+	var protocol po.Option
+	if flagProtocol == "rabbit" {
+		protocol = po.WithProtocolRabbitMQ(defaultRabbitUrl, "teller", "app")
+	} else if flagProtocol != "channels" && strings.TrimSpace(flagProtocol) != "" {
+		protocol = po.WithProtocolRabbitMQ(flagProtocol, "teller", "app")
 	} else {
-		broker = po.WithBrokerChannel()
+		protocol = po.WithProtocolChannels()
 	}
 
 	var store po.Option
 	if flagStore == "pg" {
-		store = po.WithStorePGUrl(defaultPGUrl)
+		store = po.WithStorePostgresUrl(defaultPGUrl)
 	} else if flagStore != "inmemory" && strings.TrimSpace(flagStore) != "" {
-		store = po.WithStorePGUrl(flagStore)
+		store = po.WithStorePostgresUrl(flagStore)
 	} else {
 		store = po.WithStoreInMemory()
 	}
 
-	log.Printf("Starting Teller with store [%s] and broker [%s]", flagStore, flagBroker)
+	log.Printf("Starting Teller with store [%s] and broker [%s]", flagStore, flagProtocol)
 
 	rootCtx := context.Background()
 
 	// initialize PO
-	dao, err := po.NewFromOptions(broker, store)
+	dao, err := po.NewFromOptions(protocol, store)
 	if err != nil {
 		log.Fatalf("failed initialize po: %s", err)
 	}
